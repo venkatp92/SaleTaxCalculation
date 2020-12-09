@@ -1,7 +1,6 @@
 package com.test;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -12,14 +11,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SaleTaxCalculation {
-	static DecimalFormat df = new DecimalFormat("0.00");
+	static DecimalFormat df = new DecimalFormat("#0.00");
 	
 	static final Double saleTax = 0.1;
 	static final Double importTax = 0.05;
 	static final Double saleImportTax = 0.15;
 
 	public static void main(String[] args) {
-		df.setRoundingMode(RoundingMode.UP);
 		Scanner input = new Scanner(System.in);
 		System.out.println("Please enter file location");
 		String filename = input.next();
@@ -54,13 +52,13 @@ public class SaleTaxCalculation {
 			boolean calImportTax = false;
 			boolean calSaleImportTax = false;
 
-			if (!t.contains("book") && !t.contains("chocolate") && !t.contains("imported") && !t.contains("pills")) {
+			if (!t.contains("book") && !t.contains("chocolate") && !t.contains("imported") && !t.contains("pill")) {
 				calSaleTax = true;
-			} else if (!t.contains("book") && !t.contains("chocolates") && !t.contains("pills")
+			} else if (!t.contains("book") && !t.contains("chocolate") && !t.contains("pill")
 					&& t.contains("imported")) {
 				calSaleImportTax = true;
 			} else if (t.contains("imported")
-					&& (t.contains("book") || t.contains("chocolates") || t.contains("pills"))) {
+					&& (t.contains("book") || t.contains("chocolate") || t.contains("pill"))) {
 				calImportTax = true;
 			}
 
@@ -70,15 +68,15 @@ public class SaleTaxCalculation {
 				Double priceWithTax = price;
 				actualTotal = actualTotal + priceWithTax;
 				if (calSaleTax) {
-					priceWithTax = Double.parseDouble(df.format((price + price * saleTax)));
+					priceWithTax = price + Math.round(price * saleTax*20)/20.0;
 				} else if (calSaleImportTax) {
-					priceWithTax = Double.parseDouble(df.format((price + price * saleImportTax)));
+					priceWithTax = price + Math.round(price * saleImportTax*20)/20.0;
 				}
 				if (calImportTax) {
-					priceWithTax = Double.parseDouble(df.format((price + price * importTax)));
+					priceWithTax = price + Math.round(price * importTax*20)/20.0;
 				}
 				total = total + priceWithTax;
-				outputList.add(t.substring(0, lastIndex) + " " + priceWithTax);
+				outputList.add(t.substring(0, lastIndex) + " " + df.format(priceWithTax));
 			} catch (Exception e) {
 				System.out.println("Input Exception" + e);
 			}
